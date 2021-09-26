@@ -37,18 +37,27 @@ N_iter = float(args.iter[0])	# no. of MC iteration steps
 ###		MAIN	###
 
 [n, box, r] = read_cnf_atoms ( 'cluster.inp', with_v=False )
+#[n, box, r] = read_cnf_atoms ( 'two_spheres.inp', with_v=False )
 
 print('n = ', n)
 print('box size = ', box)
+print('epsilon = ', eps)
+print('well depth = ', -U)
+print('')
+print('')
+print('intial overlap status:', overlap(box, r))
 
-print(overlap(box, r))
+Energy_ = n_energy(box, r, eps, U)
+
+print('initial energy = ', Energy_)
 
 
 for i in range(int(N_iter)):
-	Move_(r, ds)
+	Move_( r, ds )
+	Energy_ = n_energy(box, r, eps, U)
 	savetxt('data'+str(i)+'.csv', r, delimiter=',')
-	
-	if i == 0 or i == N_iter-1:
+	print('Iteration', i, '\t', 'Overlap', overlap( box , r ), '\t', 'Energy = ', Energy_)
+	if i%10 == 0:
 		fig = plt.figure()
 		
 		
@@ -62,7 +71,5 @@ for i in range(int(N_iter)):
 		plt.close()
 		
 	i += 1
-	
-	print(i)
 
-print(overlap(box, r))
+

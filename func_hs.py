@@ -148,19 +148,23 @@ def n_overlap_1 ( ri, box, r ):
 
 def energy ( ri, box, rj, eps, U ):
 	rij = ri - rj            # Separation vector
-    rij = rij - np.rint(rij) # Periodic boundary conditions in box=1 units
-    rij_sq = np.sum(rij**2)  # Squared separation
-	if rij_sq > 1 + eps		 # The sphere dia is taken to be 1
+	rij = rij - np.rint(rij) # Periodic boundary conditions in box=1 units
+	rij_sq = np.sum(rij**2)  # Squared separation
+	E = 0
+	if rij_sq > eps:	 # The sphere dia is taken to be 1
 		E = 0
-	elif rij_sq < 1 + eps and rij_sq > 1
+	elif rij_sq < eps and rij_sq > 0:
 		E = -U
+	else:
+		E = 0
 	return E
 	
 def n_energy ( box, r, eps, U ):
+	En = 0.0
 	for ri in r:
-		for rj in r and rj != ri:
-			E = energy ( ri, box, rj, eps, U)
-	return E
+		for rj in r:
+			En = En + energy ( ri, box, rj, eps, U)
+	return En/2
 
 
 ####################################################################################
